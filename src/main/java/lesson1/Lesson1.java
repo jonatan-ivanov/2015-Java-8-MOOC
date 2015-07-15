@@ -13,6 +13,7 @@ import java.util.TreeMap;
 
 /**
  * @author Speakjava (simon.ritter@oracle.com)
+ * @author Jonatan Ivanov
  */
 public class Lesson1 {
   /**
@@ -45,10 +46,11 @@ public class Lesson1 {
    * of Strings provided.
    */
   private void exercise1() {
-    List<String> list = Arrays.asList(
-        "alpha", "bravo", "charlie", "delta", "echo", "foxtrot");
+    List<String> list = Arrays.asList("alpha", "bravo", "charlie", "delta", "echo", "foxtrot");
 
-    /* YOUR CODE HERE */
+    StringBuilder sb = new StringBuilder();
+    list.forEach(s -> sb.append(s.charAt(0)));
+    System.out.println(sb);
   }
 
   /**
@@ -57,10 +59,10 @@ public class Lesson1 {
    * Remove the words that have odd lengths from the list.
    */
   private void exercise2() {
-    List<String> list = new ArrayList<>(Arrays.asList(
-        "alpha", "bravo", "charlie", "delta", "echo", "foxtrot"));
+    List<String> list = new ArrayList<>(Arrays.asList("alpha", "bravo", "charlie", "delta", "echo", "foxtrot"));
 
-    /* YOUR CODE HERE */
+    list.removeIf(s -> s.length() % 2 != 0);
+    System.out.println(list);
   }
 
   /**
@@ -69,10 +71,10 @@ public class Lesson1 {
    * Replace every word in the list with its upper case equivalent.
    */
   private void exercise3() {
-    List<String> list = new ArrayList<>(Arrays.asList(
-        "alpha", "bravo", "charlie", "delta", "echo", "foxtrot"));
+    List<String> list = new ArrayList<>(Arrays.asList("alpha", "bravo", "charlie", "delta", "echo", "foxtrot"));
 
-    /* YOUR CODE HERE */
+    list.replaceAll(String::toUpperCase);
+    System.out.println(list);
   }
 
   /**
@@ -87,7 +89,9 @@ public class Lesson1 {
     map.put("b", 2);
     map.put("a", 1);
 
-    /* YOUR CODE HERE */
+    StringBuilder sb = new StringBuilder();
+    map.forEach((k, v) -> sb.append(k+v));
+    System.out.println(sb);
   }
 
   /**
@@ -98,7 +102,7 @@ public class Lesson1 {
   private void exercise5() {
     List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-    /* YOUR CODE HERE */
+    new Thread(() -> System.out.println(list)).start();
   }
 
   /**
