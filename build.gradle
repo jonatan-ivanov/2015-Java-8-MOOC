@@ -1,4 +1,12 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
+
+task cleanAll << {
+    delete '.settings'
+    delete 'bin'
+}
+
+cleanAll.dependsOn clean, cleanEclipse
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
