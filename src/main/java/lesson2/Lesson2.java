@@ -17,9 +17,11 @@ import java.util.stream.Stream;
 
 /**
  * @author Speakjava (simon.ritter@oracle.com)
+ * @author Jonatan Ivanov
  */
 public class Lesson2 {
   private static final String WORD_REGEXP = "[- .:,]+";
+  private static final String SONNET1_PATH = "src/main/resources/lesson2/SonnetI.txt";
 
   /**
    * Run the exercises to ensure we got the right answers
@@ -51,10 +53,13 @@ public class Lesson2 {
    * lower case and print them out.
    */
   private void exercise1() {
-    List<String> list = Arrays.asList(
-        "The", "Quick", "BROWN", "Fox", "Jumped", "Over", "The", "LAZY", "DOG");
+    List<String> list = Arrays.asList("The", "Quick", "BROWN", "Fox", "Jumped", "Over", "The", "LAZY", "DOG");
 
-    /* YOUR CODE HERE */
+    List<String> result = list.stream()
+            .map(String::toLowerCase)
+            .collect(Collectors.toList());
+
+    System.out.println(result);
   }
 
   /**
@@ -64,10 +69,14 @@ public class Lesson2 {
    * odd length
    */
   private void exercise2() {
-    List<String> list = Arrays.asList(
-        "The", "Quick", "BROWN", "Fox", "Jumped", "Over", "The", "LAZY", "DOG");
+    List<String> list = Arrays.asList("The", "Quick", "BROWN", "Fox", "Jumped", "Over", "The", "LAZY", "DOG");
 
-    /* YOUR CODE HERE */
+    List<String> result = list.stream()
+            .filter(s -> s.length() % 2 != 0)
+            .map(String::toLowerCase)
+            .collect(Collectors.toList());
+
+    System.out.println(result);
   }
 
   /**
@@ -77,22 +86,26 @@ public class Lesson2 {
    * where each word is separated by a hyphen (-). Print the resulting string.
    */
   private void exercise3() {
-    List<String> list = Arrays.asList(
-        "The", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dog");
+    List<String> list = Arrays.asList("The", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dog");
 
-    /* YOUR CODE HERE */
+    String result = list.stream()
+            .skip(1)
+            .limit(3)
+            .collect(Collectors.joining("-"));
+
+    System.out.println(result);
   }
 
   /**
    * Count the number of lines in the file using the BufferedReader provided
    */
   private void exercise4() throws IOException {
-    try (BufferedReader reader = Files.newBufferedReader(
-        Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(SONNET1_PATH), StandardCharsets.UTF_8)) {
+      long result = reader.lines().count();
+      System.out.println(result);
     }
   }
-  
+
   /**
    * Using the BufferedReader to access the file, create a list of words with
    * no duplicates contained in the file.  Print the words.
@@ -100,31 +113,47 @@ public class Lesson2 {
    * HINT: A regular expression, WORD_REGEXP, is already defined for your use.
    */
   private void exercise5() throws IOException {
-    try (BufferedReader reader = Files.newBufferedReader(
-        Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(SONNET1_PATH), StandardCharsets.UTF_8)) {
+      List<String> result = reader.lines()
+              .flatMap(line -> Stream.of(line.split(WORD_REGEXP)))
+              .distinct()
+              .collect(Collectors.toList());
+
+      System.out.println(result);
     }
   }
-  
+
   /**
    * Using the BufferedReader to access the file create a list of words from 
    * the file, converted to lower-case and with duplicates removed, which is
    * sorted by natural order.  Print the contents of the list.
    */
   private void exercise6() throws IOException {
-    try (BufferedReader reader = Files.newBufferedReader(
-        Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(SONNET1_PATH), StandardCharsets.UTF_8)) {
+      List<String> result = reader.lines()
+              .flatMap(line -> Stream.of(line.split(WORD_REGEXP)))
+              .map(String::toLowerCase)
+              .distinct()
+              .sorted()
+              .collect(Collectors.toList());
+
+      System.out.println(result);
     }
   }
-  
+
   /**
    * Modify exercise6 so that the words are sorted by length
    */
   private void exercise7() throws IOException {
-    try (BufferedReader reader = Files.newBufferedReader(
-        Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(SONNET1_PATH), StandardCharsets.UTF_8)) {
+      List<String> result = reader.lines()
+              .flatMap(line -> Stream.of(line.split(WORD_REGEXP)))
+              .map(String::toLowerCase)
+              .distinct()
+              .sorted((a, b) -> a.length() - b.length())
+              .collect(Collectors.toList());
+
+      System.out.println(result);
     }
   }
 
@@ -139,4 +168,3 @@ public class Lesson2 {
     lesson.runExercises();
   }
 }
-
