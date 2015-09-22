@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 /**
  * @author Simon Ritter (@speakjava)
  * @author Stuart Marks
+ * @author Jonatan Ivanov
  */
 public class Lesson3 {
   /* How many times to repeat the test.  5 seems to give reasonable results */
@@ -27,14 +28,14 @@ public class Lesson3 {
    * @param <T> The type of the result provided by the Supplier
    * @param label Description of what's being measured
    * @param supplier The Supplier to measure execution time of
-   * @return
+   * @return The result returned by the Supplier
    */
   static <T> T measureOneRun(String label, Supplier<T> supplier) {
     long startTime = System.nanoTime();
     T result = supplier.get();
     long endTime = System.nanoTime();
-    System.out.printf("%s took %dms%n",
-        label, (endTime - startTime + 500_000L) / 1_000_000L);
+    System.out.printf("%s took %dms%n", label, (endTime - startTime + 500_000L) / 1_000_000L);
+
     return result;
   }
 
@@ -69,12 +70,25 @@ public class Lesson3 {
   static int[][] computeLevenshtein(List<String> wordList, boolean parallel) {
     final int LIST_SIZE = wordList.size();
     int[][] distances = new int[LIST_SIZE][LIST_SIZE];
-    
-    // YOUR CODE HERE
-    
+
+    createIntStream(0, LIST_SIZE - 1, parallel).forEach(i ->
+      createIntStream(0, LIST_SIZE - 1, parallel).forEach(j ->
+        distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j))
+      )
+    );
+
     return distances;
   }
-  
+
+  private static IntStream createIntStream(int startInclusive, int endExclusive, boolean parallel) {
+    IntStream stream = IntStream.range(startInclusive, endExclusive);
+    if (parallel) {
+      stream = stream.parallel();
+    }
+
+    return stream;
+  }
+
   /**
    * Process a list of random strings and return a modified list
    * 
@@ -83,9 +97,12 @@ public class Lesson3 {
    * @return The list processed in whatever way you want
    */
   static List<String> processWords(List<String> wordList, boolean parallel) {
-    // YOUR CODE HERE
-    
-    return null;
+    Stream<String> stringStream = wordList.stream();
+    if (parallel) {
+      stringStream = stringStream.parallel();
+    }
+
+    return stringStream.map(String::toUpperCase).collect(Collectors.toList());
   }
 
   /**
@@ -98,10 +115,10 @@ public class Lesson3 {
     RandomWords fullWordList = new RandomWords();
     List<String> wordList = fullWordList.createList(1000);
 
-    measure("Sequential", () -> computeLevenshtein(wordList, false));
-    measure("Parallel", () -> computeLevenshtein(wordList, true));
-    
-//    measure("Sequential", () -> processWords(wordList, false));
-//    measure("Parallel", () -> processWords(wordList, true));
+    measure("Sequential computeLevenshtein", () -> computeLevenshtein(wordList, false));
+    measure("Parallel computeLevenshtein", () -> computeLevenshtein(wordList, true));
+
+    measure("Sequential processWords", () -> processWords(wordList, false));
+    measure("Parallel processWords", () -> processWords(wordList, true));
   }
 }

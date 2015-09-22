@@ -18,8 +18,10 @@ import java.util.stream.Collectors;
  * Class to generate a list of random words
  *
  * @author Simon Ritter (@speakjava)
+ * @author Jonatan Ivanov
  */
 public class RandomWords {
+  private static final String WORDS_PATH = "src/main/resources/lesson3/words.txt";
   private final List<String> sourceWords;
 
   /**
@@ -28,9 +30,9 @@ public class RandomWords {
    * @throws IOException If the source words file cannot be read
    */
   public RandomWords() throws IOException {   
-    try (BufferedReader reader = Files.newBufferedReader(Paths.get("words"))) {
-      sourceWords = null;    // YOUR CODE HERE
-      
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(WORDS_PATH))) {
+      sourceWords = reader.lines().collect(Collectors.toList());
+
       System.out.println("Loaded " + sourceWords.size() + " words");
     }
   }
@@ -43,7 +45,11 @@ public class RandomWords {
    */
   public List<String> createList(int listSize) {
     Random rand = new Random();
-    List<String> wordList = null; // YOUR CODE HERE
+    List<String> wordList = rand.ints()
+            .filter(r -> 0 < r && r < sourceWords.size())
+            .mapToObj(r -> sourceWords.get(r))
+            .limit(listSize)
+            .collect(Collectors.toList());
 
     return wordList;
   }
